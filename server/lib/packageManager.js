@@ -6,11 +6,16 @@ PackageManager = function(name) {
 };
 
 PackageManager.prototype.publishPackage = function(name, version, deps) {
+  if(!name || !version) {
+    throw new Meteor.Error("package without a name or version");
+  }
+
   if (!this.Packages.findOne({name: name})) {
     this.Packages.insert({name: name});
   }
 
-  var ecv = this._findEcv(name) || version;
+  var numericVersion = this._getNumericVersion(version);
+  var ecv =  this._findEcv(numericVersion, name) || version;
 
   var constructedDeps = {};
   _.each(deps, function (constraint, name) {
@@ -25,15 +30,25 @@ PackageManager.prototype.publishPackage = function(name, version, deps) {
   });
   this.Versions.insert({ packageName: name, version: version,
                     earliestCompatibleVersion: ecv,
+                    numericVersion: numericVersion,
                     dependencies: constructedDeps, timestamp: Date.now() });
   this.Builds.insert({ packageName: name, version: version,
                   buildArchitectures: "web+os" });
 };
 
-PackageManager.prototype._findEcv = function(name) {
+PackageManager.prototype._getNumericVersion = function(version) {
+  return parseInt(version.replace(/\./g, ''));
+};
+
+PackageManager.prototype._findEcv = function(numericVersion, name) {
+  var earliestEcv = numericVersion - (numericVersion % 100);
+
   var firstVersion = this.Versions.findOne(
-    {packageName: name}, 
-    {sort: {timestamp: -1}}
+    {
+      packageName: name,
+      numericVersion: {$gte: earliestEcv}
+    }, 
+    {sort: {numericVersion: 1}}
   );
 
   if(firstVersion) {
