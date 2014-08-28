@@ -5,18 +5,21 @@ Meteor.publish('packageManager', function(name) {
     throw new Meteor.Error(403, "existing package manager: " + name + " - create a new one");
   }
 
-  var pm = packageManagers[name] = new PackageManager(name);
   this.ready();
   this.onStop(function() {
-    pm.cleanup();
-    packageManagers[name] = null;
+    var pm = packageManagers[name];
+    if(pm) {
+      packageManagers[name] = null;
+      pm.cleanup();
+    }
   });
 });
 
 Meteor.methods({
   publishPackages: function(name, packageList) {
-    var pm = getPackageManager(name);
-    pm.cleanPackages();
+    var pm = new PackageManager(name);
+    packageManagers[name] = pm;
+    
     packageList.forEach(function(args) {
       pm.publishPackage.apply(pm, args);
     });

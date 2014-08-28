@@ -18,11 +18,12 @@ Template.manager.events({
       packages.push([name, version, deps]);
     }
 
-    var name = Router.current().params.name;
+    var name = GetName();
     Meteor.call('publishPackages', name, packages, function(err) {
       if(err) {
         setMessage(err.message);
       } else {
+        UpdateUrl({packages: strPackages});
         setMessage('packges published!');
       }
     });
@@ -39,11 +40,12 @@ Template.manager.events({
       deps[parts[0]] = parts[1] || "";
     }
 
-    var name = Router.current().params.name;
+    var name = GetName();
     Meteor.call('resolve', name, deps, function(err, res) {
       if(err) {
         setMessage(err.message);
       } else if(res.resolvedDeps){
+        UpdateUrl({deps: strDeps});
         setMessage(JSON.stringify(res.resolvedDeps, null, 2), true);
       } else if(res.error) {
         setMessage("ERROR: " + res.error, true);
