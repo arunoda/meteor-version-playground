@@ -7,6 +7,4 @@ standard-app-packages
 insecure
 constraint-solver
 minimongo
-iron:router
 mizzao:bootstrap-3
-

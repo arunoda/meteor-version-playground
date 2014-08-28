@@ -6,7 +6,6 @@ var packageData = {
 var name;
 
 SetName = function(n) {
-  console.log('set...', n);
   name = n;
 }
 
@@ -19,15 +18,38 @@ UpdateUrl = function (obj) {
 
   var strData = encodeURIComponent(JSON.stringify(packageData));
   var name = GetName();
-  Router.go('/pm/' + name + '?data=' + strData);
+  location.href = '/#' + strData;
 }
 
 SetData = function(data) {
   var jsonData = JSON.parse(decodeURIComponent(data));
   _.extend(packageData, jsonData);
 
-  Template.manager.rendered = function() {
+  if(Template.manager.rendered) {
+    setValues();
+  } else {
+    Template.manager.onRendered = setValues;
+  }
+
+  function setValues () {
     $('#package-store').val(packageData.packages);
     $('#application-deps').val(packageData.deps);
-  };
+  }
 } 
+
+var handler;
+SetMessage = function (message, dontClean) {
+  if(handler) {
+    clearTimeout(handler);
+    handler = null;
+  }
+
+  $('.messageBox').html(message);
+  if(!dontClean) {
+    handler = setTimeout(ClearMessage, 5 * 1000);
+  }
+}
+
+ClearMessage = function () {
+  $('.messageBox').html('');
+}

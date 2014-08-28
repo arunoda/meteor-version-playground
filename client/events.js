@@ -12,7 +12,7 @@ Template.manager.events({
       try {
         var deps = (parts[2])? getObj(parts[2]) : {};
       } catch(ex) {
-        return setMessage("error when parsing: " + parts[2] + "\n> " + ex.message);
+        return SetMessage("error when parsing: " + parts[2] + "\n> " + ex.message);
       }
 
       packages.push([name, version, deps]);
@@ -21,10 +21,10 @@ Template.manager.events({
     var name = GetName();
     Meteor.call('publishPackages', name, packages, function(err) {
       if(err) {
-        setMessage(err.message);
+        SetMessage(err.message);
       } else {
         UpdateUrl({packages: strPackages});
-        setMessage('packges published!');
+        SetMessage('packges published!');
       }
     });
   },
@@ -43,12 +43,12 @@ Template.manager.events({
     var name = GetName();
     Meteor.call('resolve', name, deps, function(err, res) {
       if(err) {
-        setMessage(err.message);
+        SetMessage(err.message);
       } else if(res.resolvedDeps){
         UpdateUrl({deps: strDeps});
-        setMessage(JSON.stringify(res.resolvedDeps, null, 2), true);
+        SetMessage(JSON.stringify(res.resolvedDeps, null, 2), true);
       } else if(res.error) {
-        setMessage("ERROR: " + res.error, true);
+        SetMessage("ERROR: " + res.error, true);
       }
     });
   }
@@ -58,23 +58,6 @@ function getObj(str) {
   var obj;
   eval("obj = " + str);
   return obj;
-}
-
-var handler;
-function setMessage(message, dontClean) {
-  if(handler) {
-    clearTimeout(handler);
-    handler = null;
-  }
-
-  $('.messageBox').html(message);
-  if(!dontClean) {
-    handler = setTimeout(clearMessage, 5 * 1000);
-  }
-}
-
-function clearMessage() {
-  $('.messageBox').html('');
 }
 
 function doTrim (line) {

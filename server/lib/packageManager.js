@@ -12,8 +12,6 @@ PackageManager.prototype.publishPackage = function(name, version, deps) {
 
   var ecv = this._findEcv(name) || version;
 
-  console.log(name, version, ecv, deps);
-
   var constructedDeps = {};
   _.each(deps, function (constraint, name) {
     constructedDeps[name] = {
