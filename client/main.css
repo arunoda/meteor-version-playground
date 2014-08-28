@@ -1,0 +1,18 @@
+h3 {
+  font-size: 20px;
+}
+
+textarea {
+  border: 1px solid #ddd;
+  width: 500px;
+  height: 200px;
+  padding: 10px;
+  outline: 0;
+  font-family: monospace;
+}
+
+.messageBox {
+  margin-top: 20px;
+  min-height: 50px;  
+  width: 500px;
+}
