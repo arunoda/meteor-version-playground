@@ -1,11 +1,11 @@
 application-configuration@1.0.0
-autoupdate@1.0.4
+autoupdate@1.0.5
 binary-heap@1.0.0
 blaze-tools@1.0.0
 blaze@1.0.3
 callback-hook@1.0.0
 check@1.0.0
-constraint-solver@1.0.9
+constraint-solver@1.0.10
 ctl-helper@1.0.2
 ctl@1.0.0
 deps@1.0.1
@@ -27,7 +27,7 @@ mizzao:bootstrap-3@3.2.0
 mongo-livedata@1.0.3
 observe-sequence@1.0.1
 ordered-dict@1.0.0
-package-version-parser@1.0.5
+package-version-parser@1.0.6
 random@1.0.0
 reactive-dict@1.0.0
 reload@1.0.0
