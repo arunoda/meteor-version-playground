@@ -1,10 +1,10 @@
 Template.manager.events({
   "click #resolve": function() {
     
-    var strDeps = $('#application-deps').val();
+    var strDeps = $('#application-deps').val().trim();
     var deps = getDeps(strDeps);
 
-    var strPackages = $('#package-store').val();
+    var strPackages = $('#package-store').val().trim();
     var packages = getPackages(strPackages);
 
     SetMessage("resolving...", true);
@@ -22,7 +22,7 @@ Template.manager.events({
 });
 
 function getPackages (strPackages) {
-  var lines = strPackages.split('\n').map(doTrim);
+  var lines = strPackages.split('\n').map(doTrim).filter(doRemoveEmptyLines);
   var packages = [];
   for(var lc = 0; lc< lines.length; lc++) {
     var line = lines[lc];
@@ -43,7 +43,7 @@ function getPackages (strPackages) {
 }
 
 function getDeps (strDeps) {
-  var lines = strDeps.split("\n").map(doTrim);
+  var lines = strDeps.split("\n").map(doTrim).filter(doRemoveEmptyLines);
   var deps = {};
 
   for(var lc = 0; lc< lines.length; lc++) {
@@ -63,4 +63,12 @@ function getObj(str) {
 
 function doTrim (line) {
   return line.trim();
+}
+
+function doRemoveEmptyLines(line) {
+  if(!line || line == "") {
+    return false;
+  }
+
+  return true;
 }

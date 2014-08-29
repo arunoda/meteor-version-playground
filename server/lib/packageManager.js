@@ -6,8 +6,12 @@ PackageManager = function(name) {
 };
 
 PackageManager.prototype.publishPackage = function(name, version, deps) {
-  if(!name || !version) {
-    throw new Meteor.Error("package without a name or version");
+  if(!name) {
+    throw new Meteor.Error(403, 'package without a name');
+  }
+
+  if(!version) {
+    throw new Meteor.Error(403, "package '" + name + "' does not included a version");
   }
 
   if (!this.Packages.findOne({name: name})) {
@@ -16,6 +20,7 @@ PackageManager.prototype.publishPackage = function(name, version, deps) {
 
   var numericVersion = this._getNumericVersion(version);
   var ecv =  this._findEcv(numericVersion, name) || version;
+
 
   var constructedDeps = {};
   _.each(deps, function (constraint, name) {
