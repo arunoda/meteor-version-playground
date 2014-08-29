@@ -26,15 +26,22 @@ function getPackages (strPackages) {
   var packages = [];
   for(var lc = 0; lc< lines.length; lc++) {
     var line = lines[lc];
-    var parts = line.split(",").map(doTrim);
-    var name = parts[0];
-    var version = parts[1];
+    var rawPackageList = [];
 
-    try {
-      var deps = (parts[2])? getObj(parts[2]) : {};
-    } catch(ex) {
-      return SetMessage("error when parsing: " + parts[2] + "\n> " + ex.message);
-    }
+    var parts = line.split(" ").map(doTrim).forEach(function(part) {
+      if(part != "") {
+        rawPackageList.push(part.split('@'));
+      }
+    });
+
+    var firstPackage = rawPackageList.shift();
+    var name = firstPackage[0];
+    var version = firstPackage[1];
+    var deps = {};
+
+    rawPackageList.forEach(function(packageParts) {
+      deps[packageParts[0]] = packageParts[1] || "";
+    });
 
     packages.push([name, version, deps]);
   }
