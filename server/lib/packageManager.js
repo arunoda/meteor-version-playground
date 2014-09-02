@@ -116,8 +116,11 @@ PackageManager.prototype._splitArgs = function (deps) {
 
   _.each(deps, function (constr, dep) {
     dependencies.push(dep);
-    if (constr)
+    if (constr) {
       constraints.push({ packageName: dep, type: (constr.indexOf("=") !== -1 ? "exactly" : "compatible-with"), version: constr.replace("=", "")});
+    } else {
+      constraints.push({ packageName: dep, type: 'any-reasonable', version: null});
+    }
   });
   return {dependencies: dependencies, constraints: constraints};
 };
